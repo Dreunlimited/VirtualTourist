@@ -18,6 +18,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     var annotation = MKPointAnnotation()
     var fetchedResultsController:NSFetchedResultsController<Photo>!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    var pin = Pin()
     
     
     override func viewDidLoad() {
@@ -25,8 +26,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         mapView.delegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
-        
-        
+         print("My \(pin)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,14 +53,14 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         
         let sort = NSSortDescriptor(key: "image", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
         fetchRequest.sortDescriptors = [sort]
+        fetchRequest.predicate = NSPredicate(format: "pin = %@", pin)
+
         
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: (appDelegate?.persistentContainer.viewContext)!, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
             try fetchedResultsController.performFetch()
-            let results = fetchedResultsController.fetchedObjects?.count
-            
         } catch let error as NSError {
             print("Error fecthing pins \(error.localizedDescription)")
         }

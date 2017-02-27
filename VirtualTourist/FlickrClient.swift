@@ -22,7 +22,7 @@ class FlickrClient: NSObject {
         super.init()
     }
     
-    func getImages(_ url:String) {
+    func getImages(_ url:String, _ pin:Pin) {
         let request = URLRequest(url: URL(string: url)!)
         
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -61,12 +61,7 @@ class FlickrClient: NSObject {
                 
                  let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
                  photos.image = data as NSData?
-                 photos.pin = self.appDelegate?.currentPin
-                
-                print(photos.pin?.longitude)
-                print(photos.pin?.latitude)
-                
-                
+                 photos.pin = pin
                 
                 do {
                   try managedContext?.save()
