@@ -54,6 +54,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         let sort = NSSortDescriptor(key: "image", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
         fetchRequest.sortDescriptors = [sort]
         
+        
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: (appDelegate?.persistentContainer.viewContext)!, sectionNameKeyPath: nil, cacheName: nil)
         
         do {

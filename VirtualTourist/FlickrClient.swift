@@ -15,7 +15,8 @@ class FlickrClient: NSObject {
     let session = URLSession.shared
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var currentImage:Photo!
-
+   
+    
     
     override init() {
         super.init()
@@ -58,8 +59,13 @@ class FlickrClient: NSObject {
                 
                 let managedContext = self.appDelegate?.persistentContainer.viewContext
                 
-                let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
-                photos.image = data as NSData?
+                 let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
+                 photos.image = data as NSData?
+                 photos.pin = self.appDelegate?.currentPin
+                
+                print(photos.pin?.longitude)
+                print(photos.pin?.latitude)
+                
                 
                 
                 do {
@@ -75,6 +81,7 @@ class FlickrClient: NSObject {
         
         task.resume()
     }
+    
     
     func convertStringToImage(_ imageString:String) -> Data {
         let image = URL(string: imageString)

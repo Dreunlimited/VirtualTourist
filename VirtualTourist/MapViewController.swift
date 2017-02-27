@@ -12,7 +12,11 @@ import CoreData
 import SafariServices
 
 
+
 class MapViewController: UIViewController, MKMapViewDelegate {
+    
+
+
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -42,7 +46,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinDropped.coordinate = newCoordinates
             mapView.addAnnotation(pinDropped)
             
-            print("Pin Drop")
             savePin(Float(pinDropped.coordinate.latitude), long: Float(pinDropped.coordinate.longitude))
             
             FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(pinDropped.coordinate.latitude)&lon=\(pinDropped.coordinate.longitude)&per_page=20&format=json&nojsoncallback=1")
@@ -56,6 +59,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let pin = Pin(entity: Pin.entity(), insertInto: managedContext)
         pin.latitude = lat
         pin.longitude = long
+        appDelegate?.currentPin = pin
         
         do {
             try managedContext?.save()
