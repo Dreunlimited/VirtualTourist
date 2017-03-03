@@ -2,7 +2,7 @@
 //  Photo+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Dandre Ealy on 2/25/17.
+//  Created by Dandre Ealy on 3/1/17.
 //  Copyright © 2017 Dandre Ealy. All rights reserved.
 //
 
@@ -17,6 +17,8 @@ extension Photo {
     }
 
     @NSManaged public var image: NSData?
+    @NSManaged public var url: String?
+    @NSManaged public var title: String?
     @NSManaged public var pin: Pin?
 
 }

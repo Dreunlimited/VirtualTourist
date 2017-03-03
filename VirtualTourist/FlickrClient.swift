@@ -14,8 +14,7 @@ class FlickrClient: NSObject {
     
     let session = URLSession.shared
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    var currentImage:Photo!
-   
+
     
     
     override init() {
@@ -41,26 +40,26 @@ class FlickrClient: NSObject {
                 return
             }
             
-            guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
+            guard var photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
                 return
             }
-       
+            
             
             for photoObject in photosArray {
+                //title, imageURL, image, Pin
                 let farm = photoObject["farm"] as AnyObject
                 let server = photoObject["server"] as AnyObject
                 let photo = photoObject["id"] as AnyObject
                 let secret = photoObject["secret"] as AnyObject
+                _ = photoObject["list"] as AnyObject
                 
                 
-                let imageStrings = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
-                let data = self.convertStringToImage(imageStrings)
-                
+            let imageString = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
                 
                 let managedContext = self.appDelegate?.persistentContainer.viewContext
                 
                  let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
-                 photos.image = data as NSData?
+                 photos.url = imageString
                  photos.pin = pin
                 
                 do {
@@ -68,21 +67,40 @@ class FlickrClient: NSObject {
                 } catch let error as NSError {
                     print("Could not save \(error.userInfo)")
                 }
-
-                
             }
            
         }
         
         task.resume()
     }
+
+
     
-    
-    func convertStringToImage(_ imageString:String) -> Data {
-        let image = URL(string: imageString)
-        let imageData = try? Data(contentsOf: image!)
+    func convertStringToImage(_ photo: Photo, completionHandler: @escaping(_ image: UIImage?, _ error: NSError?)-> Void)  {
+        //let image = URL(string: imageString)
+       // let imageData = try? Data(contentsOf: image!)
         
-        return imageData!
+        
+        let request = URLRequest(url: URL(string: photo.url!)!)
+        
+        _ = session.dataTask(with: request) { (data, response, error) in
+            
+            
+            // data -> 
+            
+            let imageData = UIImage(data: data!)
+            
+            if let imageData = imageData {
+              completionHandler(imageData, nil)
+                print("Yes")
+            }
+            
+            if error != nil {
+                completionHandler(nil, error as NSError?)
+            }
+        }
+        // data task  -> request -> image url as url
+        
     }
     
     // MARK: Helper for Creating a URL from Parameters

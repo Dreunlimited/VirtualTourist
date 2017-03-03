@@ -14,8 +14,7 @@ import SafariServices
 
 
 class MapViewController: UIViewController, MKMapViewDelegate {
-    var pin = Pin()
-
+    
     @IBOutlet weak var mapView: MKMapView!
     
     var fetchedResultsController:NSFetchedResultsController<Pin>!
@@ -44,25 +43,27 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinDropped.coordinate = newCoordinates
             mapView.addAnnotation(pinDropped)
             
-            savePin(Float(pinDropped.coordinate.latitude), long: Float(pinDropped.coordinate.longitude))
-            
+            savePin(Double(pinDropped.coordinate.latitude), long: Double(pinDropped.coordinate.longitude))
         }
     }
     
-    func savePin(_ lat:Float, long:Float) {
+    func savePin(_ lat:Double, long:Double) {
         
         let managedContext = appDelegate?.persistentContainer.viewContext
-        pin = Pin(entity: Pin.entity(), insertInto: managedContext)
-        pin.latitude = lat
-        pin.longitude = long
+        let pin = Pin(entity: Pin.entity(), insertInto: managedContext)
+        pin.latitude = Double(lat)
+        pin.longitude = Double(long)
+        print(pin)
         
-           FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(lat)&lon=\(long)&per_page=20&format=json&nojsoncallback=1", pin)
+         FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(lat)&lon=\(long)&per_page=20&format=json&nojsoncallback=1", pin)
         
         do {
             try managedContext?.save()
         } catch let error as NSError {
             print("Could not save \(error.userInfo)")
         }
+        
+       
     }
     
 
@@ -90,6 +91,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         } catch let error as NSError {
             print("Error fecthing pins \(error.localizedDescription)")
         }
+        
     }
     
 }
@@ -98,10 +100,19 @@ extension MapViewController {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        let photoVC = storyboard?.instantiateViewController(withIdentifier: "photoVC") as! PhotoViewController
-        photoVC.currentCoordinate = (view.annotation?.coordinate)!
-        photoVC.pin = pin
-        navigationController?.pushViewController(photoVC, animated: true)
+       
+            let photoVC = storyboard?.instantiateViewController(withIdentifier: "photoVC") as! PhotoViewController
+            photoVC.currentCoordinate = (view.annotation?.coordinate)!
+        
+        let pins = fetchedResultsController.fetchedObjects
+            for pin in pins! {
+                if pin.latitude == Double((view.annotation?.coordinate.latitude)!) && pin.longitude == Double((view.annotation?.coordinate.longitude)!) {
+                    photoVC.pin = pin
+                    navigationController?.pushViewController(photoVC, animated: true)
+            }
+            
+        }
+       
         
     }
     

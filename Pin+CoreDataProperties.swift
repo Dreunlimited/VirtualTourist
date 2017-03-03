@@ -2,7 +2,7 @@
 //  Pin+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Dandre Ealy on 2/25/17.
+//  Created by Dandre Ealy on 3/2/17.
 //  Copyright © 2017 Dandre Ealy. All rights reserved.
 //
 
@@ -16,8 +16,8 @@ extension Pin {
         return NSFetchRequest<Pin>(entityName: "Pin");
     }
 
-    @NSManaged public var latitude: Float
-    @NSManaged public var longitude: Float
+    @NSManaged public var latitude: Double
+    @NSManaged public var longitude: Double
     @NSManaged public var photos: NSSet?
 
 }
