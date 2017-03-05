@@ -14,7 +14,7 @@ class FlickrClient: NSObject {
     
     let session = URLSession.shared
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-
+    
     
     
     override init() {
@@ -26,7 +26,7 @@ class FlickrClient: NSObject {
         
         let task = session.dataTask(with: request) { (data, response, error) in
             guard error == nil else {
-               print("Error \(error)")
+                print("Error with request: \(error)")
                 return
             }
             
@@ -40,7 +40,7 @@ class FlickrClient: NSObject {
                 return
             }
             
-            guard var photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
+            guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
                 return
             }
             
@@ -51,48 +51,47 @@ class FlickrClient: NSObject {
                 let server = photoObject["server"] as AnyObject
                 let photo = photoObject["id"] as AnyObject
                 let secret = photoObject["secret"] as AnyObject
-                _ = photoObject["list"] as AnyObject
+                let title = photoObject["title"] as? String
                 
-                
-            let imageString = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
+                let imageString = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
                 
                 let managedContext = self.appDelegate?.persistentContainer.viewContext
                 
-                 let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
-                 photos.url = imageString
-                 photos.pin = pin
+                let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
+                photos.url = imageString
+                photos.title = title
+                photos.pin = pin
                 
                 do {
-                  try managedContext?.save()
+                    try managedContext?.save()
                 } catch let error as NSError {
                     print("Could not save \(error.userInfo)")
                 }
             }
-           
+            
         }
         
         task.resume()
     }
-
-
+    
+    
     
     func convertStringToImage(_ photo: Photo, completionHandler: @escaping(_ image: UIImage?, _ error: NSError?)-> Void)  {
-        //let image = URL(string: imageString)
-       // let imageData = try? Data(contentsOf: image!)
-        
         
         let request = URLRequest(url: URL(string: photo.url!)!)
         
-        _ = session.dataTask(with: request) { (data, response, error) in
+        let task = session.dataTask(with: request) { (data, response, error) in
             
-            
-            // data -> 
-            
-            let imageData = UIImage(data: data!)
-            
-            if let imageData = imageData {
-              completionHandler(imageData, nil)
-                print("Yes")
+           
+            if let imageData = UIImage(data: data!) {
+                photo.image = data as NSData?
+                do {
+                    try photo.managedObjectContext?.save()
+                    
+                } catch let error as NSError {
+                    print("Error saving image data: \(error.localizedDescription)")
+                }
+                completionHandler(imageData, nil)
             }
             
             if error != nil {
@@ -100,7 +99,7 @@ class FlickrClient: NSObject {
             }
         }
         // data task  -> request -> image url as url
-        
+        task.resume()
     }
     
     // MARK: Helper for Creating a URL from Parameters
@@ -129,6 +128,6 @@ class FlickrClient: NSObject {
     }
 }
 
-    
+
 
 

@@ -28,8 +28,8 @@
 /* Begin PBXFileReference section */
 		319953B91E67D4CA003F2AC7 /* Photo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		319953BA1E67D4CA003F2AC7 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		319953BD1E6924E7003F2AC7 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
-		319953BE1E6924E7003F2AC7 /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		319953BD1E6924E7003F2AC7 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataClass.swift"; path = "../Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
+		319953BE1E6924E7003F2AC7 /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "../Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		31C691DA1E62201800358AC3 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31C691DD1E62201800358AC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31C691E21E62201800358AC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -60,8 +60,6 @@
 		31C691D11E62201800358AC3 = {
 			isa = PBXGroup;
 			children = (
-				319953BD1E6924E7003F2AC7 /* Pin+CoreDataClass.swift */,
-				319953BE1E6924E7003F2AC7 /* Pin+CoreDataProperties.swift */,
 				31C691DC1E62201800358AC3 /* VirtualTourist */,
 				31C691F71E62212300358AC3 /* Resources */,
 				31C691DB1E62201800358AC3 /* Products */,
@@ -110,6 +108,8 @@
 		31C691F41E62205100358AC3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				319953BD1E6924E7003F2AC7 /* Pin+CoreDataClass.swift */,
+				319953BE1E6924E7003F2AC7 /* Pin+CoreDataProperties.swift */,
 				319953B91E67D4CA003F2AC7 /* Photo+CoreDataClass.swift */,
 				319953BA1E67D4CA003F2AC7 /* Photo+CoreDataProperties.swift */,
 				31C691F51E62209600358AC3 /* Client */,

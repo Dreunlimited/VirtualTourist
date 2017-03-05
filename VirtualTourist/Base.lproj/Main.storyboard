@@ -62,7 +62,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ly3-lZ-uhg">
-                                <rect key="frame" x="0.0" y="234" width="375" height="433"/>
+                                <rect key="frame" x="0.0" y="234" width="375" height="368"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="8yv-bH-3ww">
@@ -82,20 +82,40 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p83-ee-CTv">
                                                     <rect key="frame" x="0.0" y="0.0" width="87" height="67"/>
                                                 </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="6NC-pK-EJ2">
+                                                    <rect key="frame" x="37" y="27" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="top" secondItem="cQ8-lE-Pt4" secondAttribute="top" id="7Df-Bz-Vfc"/>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="leading" secondItem="cQ8-lE-Pt4" secondAttribute="leading" id="OOd-Xq-NOK"/>
+                                            <constraint firstItem="6NC-pK-EJ2" firstAttribute="leading" secondItem="cQ8-lE-Pt4" secondAttribute="leadingMargin" constant="29" id="PSd-iC-Iou"/>
+                                            <constraint firstItem="6NC-pK-EJ2" firstAttribute="centerX" secondItem="cQ8-lE-Pt4" secondAttribute="centerX" id="TIp-GQ-yg5"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="6NC-pK-EJ2" secondAttribute="trailing" constant="30" id="TXH-Ff-pyg"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="6NC-pK-EJ2" secondAttribute="bottom" constant="20" id="cUk-ag-2qB"/>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="trailing" secondItem="cQ8-lE-Pt4" secondAttribute="trailingMargin" id="igc-Fg-ULr"/>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="bottom" secondItem="cQ8-lE-Pt4" secondAttribute="bottomMargin" id="mwd-xS-0ec"/>
+                                            <constraint firstItem="6NC-pK-EJ2" firstAttribute="top" secondItem="cQ8-lE-Pt4" secondAttribute="topMargin" constant="19" id="tiJ-b2-Rfc"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityIndicator" destination="6NC-pK-EJ2" id="MLS-5U-NMY"/>
                                             <outlet property="photo" destination="p83-ee-CTv" id="ZW9-Wr-PgI"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7E1-ga-bsQ">
+                                <rect key="frame" x="16" y="617" width="343" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.62352941179999999" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Search more images">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="refreshImagesButton:" destination="bJ3-yt-rMG" eventType="touchUpInside" id="00w-WZ-9dD"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -109,6 +129,7 @@
                     <connections>
                         <outlet property="collectionView" destination="ly3-lZ-uhg" id="er7-bn-bnA"/>
                         <outlet property="mapView" destination="MsL-2x-Wg2" id="v6l-2z-XfP"/>
+                        <outlet property="refreshImagesButton" destination="7E1-ga-bsQ" id="lh9-mL-ixN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X5E-WJ-7IO" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -20,6 +20,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var fetchedResultsController:NSFetchedResultsController<Pin>!
   
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    var pin = Pin()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,26 +45,25 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             mapView.addAnnotation(pinDropped)
             
             savePin(Double(pinDropped.coordinate.latitude), long: Double(pinDropped.coordinate.longitude))
+            
+            FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(pinDropped.coordinate.latitude)&lon=\(pinDropped.coordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
         }
     }
     
     func savePin(_ lat:Double, long:Double) {
         
         let managedContext = appDelegate?.persistentContainer.viewContext
-        let pin = Pin(entity: Pin.entity(), insertInto: managedContext)
+        pin = Pin(entity: Pin.entity(), insertInto: managedContext)
         pin.latitude = Double(lat)
         pin.longitude = Double(long)
-        print(pin)
         
-         FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(lat)&lon=\(long)&per_page=20&format=json&nojsoncallback=1", pin)
         
         do {
             try managedContext?.save()
+            try fetchedResultsController.performFetch()
         } catch let error as NSError {
             print("Could not save \(error.userInfo)")
         }
-        
-       
     }
     
 
@@ -100,7 +100,6 @@ extension MapViewController {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-       
             let photoVC = storyboard?.instantiateViewController(withIdentifier: "photoVC") as! PhotoViewController
             photoVC.currentCoordinate = (view.annotation?.coordinate)!
         
