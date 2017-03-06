@@ -15,6 +15,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var refreshImagesButton: UIButton!
+
     var currentCoordinate = CLLocationCoordinate2D()
     var annotation = MKPointAnnotation()
     var fetchedResultsController:NSFetchedResultsController<Photo>!
@@ -29,6 +30,9 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         annotation.coordinate = currentCoordinate
         mapView.setRegion(MKCoordinateRegionMakeWithDistance(currentCoordinate, 1000, 1000),animated: true)
         mapView.addAnnotation(annotation)
+        navigationItem.rightBarButtonItem = editButtonItem
+        navigationController?.toolbar.isHidden = true
+        
         
     }
     
@@ -36,12 +40,12 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         super.viewWillAppear(true)
         
         fectchImages()
-
+        
     }
     
     
     @IBAction func backButton(_ sender: Any) {
-        navigationController?.popToRootViewController(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func fectchImages() {
@@ -66,6 +70,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     
     @IBAction func refreshImagesButton(_ sender: Any) {
         let randomNumber = arc4random_uniform(UInt32(20))
+        
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
 
@@ -73,9 +78,22 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         
         
         FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&page=\(randomNumber)&lat=\(currentCoordinate.latitude)&lon=\(currentCoordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
-    
-            self.collectionView.reloadData()
         
+        self.fectchImages()
+        try? fetchedResultsController.managedObjectContext.save()
+        self.collectionView.reloadData()
+        
+    }
+    
+    func onClickedToolbeltButton(_ sender: UIBarButtonItem) {
+        let indexPaths = collectionView.indexPathsForSelectedItems! as[IndexPath]
+        for indexPath in indexPaths {
+            let photo = fetchedResultsController.object(at: indexPath)
+                        fetchedResultsController.managedObjectContext.delete(photo)
+            collectionView.deleteItems(at: indexPaths)
+            collectionView.reloadData()
+           
+        }
         
         
     }
@@ -113,9 +131,12 @@ extension PhotoViewController {
                 }
             } else {
                 performUIUpdatesOnMain {
-                    cell?.activityIndicator.stopAnimating()
                     if let image =  UIImage(data: photo.image as! Data) {
                         cell?.photo.image = image
+                        cell?.editing = self.isEditing
+                        self.collectionView.reloadData()
+                        try? self.fetchedResultsController.managedObjectContext.save()
+                        cell?.activityIndicator.stopAnimating()
                     }
                     
                 }
@@ -124,14 +145,56 @@ extension PhotoViewController {
         return cell!
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let photo = fetchedResultsController.object(at: indexPath)
-        fetchedResultsController.managedObjectContext.delete(photo)
         
-        collectionView.reloadData()
+//        let photo = fetchedResultsController.object(at: indexPath)
+//        fetchedResultsController.managedObjectContext.delete(photo)
+//        
+//        performUIUpdatesOnMain {
+//        
+//        collectionView.deleteItems(at: [indexPath])
+//        collectionView.reloadData()
+//        }
         
+        if isEditing {
+            navigationController?.setToolbarHidden(false, animated: true)
+            var items = [UIBarButtonItem]()
+            items.append(
+                UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: Selector(("onClickedToolbeltButton:")))
+            )
+            self.navigationController?.toolbar.items = items
+
+        }
+    
     }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if isEditing {
+            if collectionView.indexPathsForSelectedItems?.count == 0 {
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+        }
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: true)
+        collectionView.allowsMultipleSelection = editing
+        let indexpaths = collectionView.indexPathsForVisibleItems as[IndexPath]
+        for indexpath in indexpaths {
+            collectionView.deselectItem(at: indexpath, animated: false)
+            let cell = collectionView.cellForItem(at: indexpath) as? PhotoCollectionViewCell
+            cell?.editing = editing
+        }
+        
+        if !editing {
+            navigationController?.setToolbarHidden(true, animated: animated)
+        }
+    }
+    
+    
+   
+
     
 }
 

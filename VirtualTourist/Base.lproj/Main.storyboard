@@ -85,6 +85,13 @@
                                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="6NC-pK-EJ2">
                                                     <rect key="frame" x="37" y="27" width="20" height="20"/>
                                                 </activityIndicatorView>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Unchecked" translatesAutoresizingMaskIntoConstraints="NO" id="HRf-cj-Pe7">
+                                                    <rect key="frame" x="37" y="49" width="22" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="22" id="G0i-ij-U7u"/>
+                                                        <constraint firstAttribute="width" constant="22" id="dz9-Y1-Mh7"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                         </view>
                                         <constraints>
@@ -93,13 +100,16 @@
                                             <constraint firstItem="6NC-pK-EJ2" firstAttribute="leading" secondItem="cQ8-lE-Pt4" secondAttribute="leadingMargin" constant="29" id="PSd-iC-Iou"/>
                                             <constraint firstItem="6NC-pK-EJ2" firstAttribute="centerX" secondItem="cQ8-lE-Pt4" secondAttribute="centerX" id="TIp-GQ-yg5"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="6NC-pK-EJ2" secondAttribute="trailing" constant="30" id="TXH-Ff-pyg"/>
+                                            <constraint firstItem="HRf-cj-Pe7" firstAttribute="centerX" secondItem="cQ8-lE-Pt4" secondAttribute="centerX" id="b8k-fW-9yg"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="6NC-pK-EJ2" secondAttribute="bottom" constant="20" id="cUk-ag-2qB"/>
+                                            <constraint firstAttribute="bottom" secondItem="HRf-cj-Pe7" secondAttribute="bottom" constant="4" id="edh-UU-bzI"/>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="trailing" secondItem="cQ8-lE-Pt4" secondAttribute="trailingMargin" id="igc-Fg-ULr"/>
                                             <constraint firstItem="p83-ee-CTv" firstAttribute="bottom" secondItem="cQ8-lE-Pt4" secondAttribute="bottomMargin" id="mwd-xS-0ec"/>
                                             <constraint firstItem="6NC-pK-EJ2" firstAttribute="top" secondItem="cQ8-lE-Pt4" secondAttribute="topMargin" constant="19" id="tiJ-b2-Rfc"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="activityIndicator" destination="6NC-pK-EJ2" id="MLS-5U-NMY"/>
+                                            <outlet property="checkedImageView" destination="HRf-cj-Pe7" id="dp4-KH-NdX"/>
                                             <outlet property="photo" destination="p83-ee-CTv" id="ZW9-Wr-PgI"/>
                                         </connections>
                                     </collectionViewCell>
@@ -173,4 +183,7 @@
             <point key="canvasLocation" x="141.59999999999999" y="134.48275862068968"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Unchecked" width="22" height="22"/>
+    </resources>
 </document>

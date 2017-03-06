@@ -10,7 +10,22 @@ import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var checkedImageView: UIImageView!
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    var editing:Bool = false {
+        didSet {
+            checkedImageView.isHidden = !editing
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if editing {
+                checkedImageView.image = UIImage(named: isSelected ? "Checked" : "Unchecked")
+            }
+        }
+    }
     
 }
