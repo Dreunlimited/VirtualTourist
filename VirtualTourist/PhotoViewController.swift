@@ -90,8 +90,10 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         for indexPath in indexPaths {
             let photo = fetchedResultsController.object(at: indexPath)
                         fetchedResultsController.managedObjectContext.delete(photo)
+                        try? fetchedResultsController.managedObjectContext.save()
             collectionView.deleteItems(at: indexPaths)
             collectionView.reloadData()
+            
            
         }
         
