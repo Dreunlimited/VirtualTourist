@@ -25,7 +25,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
-    var pageNum = UserDefaults()
     var number: Int!
     
     override func viewDidLoad() {
@@ -68,7 +67,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 
             FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(pinDropped.coordinate.latitude)&lon=\(pinDropped.coordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
                 
-                 number  = pageNum.value(forKey: "pageNumber") as! Int
             }
         }
     }

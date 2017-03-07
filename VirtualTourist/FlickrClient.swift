@@ -15,12 +15,12 @@ class FlickrClient: NSObject {
     let session = URLSession.shared
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     
-    
     override init() {
         super.init()
     }
     
     func getImages(_ url:String, _ pin:Pin) {
+        
         let request = URLRequest(url: URL(string: url)!)
         
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -39,7 +39,6 @@ class FlickrClient: NSObject {
                 return
             }
             
-             _ pageNumber = photosDictionary["pages"] as? Int
             
             guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
                 return

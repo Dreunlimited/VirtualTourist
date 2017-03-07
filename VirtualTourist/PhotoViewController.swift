@@ -13,20 +13,21 @@ import ReachabilitySwift
 
 class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     let reachability = Reachability()!
-
+    
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var refreshImagesButton: UIButton!
-
+    
     var currentCoordinate = CLLocationCoordinate2D()
     var annotation = MKPointAnnotation()
     var fetchedResultsController:NSFetchedResultsController<Photo>!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
     var number: Int!
-   
-
+    var pageNumber: Int = 1
+    
+    
     
     var insertedIndexPaths: [IndexPath]!
     var deletedIndexPaths: [IndexPath]!
@@ -42,16 +43,10 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         navigationItem.rightBarButtonItem = editButtonItem
         navigationController?.toolbar.isHidden = true
         fetchedResultsController?.delegate = self
-       
-
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        
         fectchImages()
-        
     }
     
     
@@ -67,8 +62,6 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.predicate = NSPredicate(format: "pin = %@", pin)
         
-        
-        
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: (appDelegate?.persistentContainer.viewContext)!, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
@@ -80,21 +73,22 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     }
     
     @IBAction func refreshImagesButton(_ sender: Any) {
-      
+        
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
         }
-        let randomNumber = arc4random_uniform(UInt32(40))
+        //        let randomNumber = arc4random_uniform(UInt32(20))
+        pageNumber = pageNumber + 1
         
         if reachability.currentReachabilityStatus == .notReachable {
             performUIUpdatesOnMain {
                 alert("Lost of internet connection", "Try again", self)
             }
         } else {
-
-        FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&page=\(randomNumber)&lat=\(currentCoordinate.latitude)&lon=\(currentCoordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
-        fectchImages()
-        collectionView.reloadData()
+            
+            FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&page=\(pageNumber)&lat=\(currentCoordinate.latitude)&lon=\(currentCoordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
+            fectchImages()
+            collectionView.reloadData()
         }
     }
     
@@ -103,11 +97,11 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         
         for indexPath in indexPaths {
             let photo = fetchedResultsController.object(at: indexPath)
-                        fetchedResultsController.managedObjectContext.delete(photo)
-            }
+            fetchedResultsController.managedObjectContext.delete(photo)
+        }
         try? fetchedResultsController.managedObjectContext.save()
-   
-         collectionView.reloadData()
+        
+        collectionView.reloadData()
         
     }
     
@@ -129,41 +123,47 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as?
         PhotoCollectionViewCell
-        cell?.checkedImageView.image = nil
+        cell?.photo.image = nil
         
         performUIUpdatesOnMain {
             cell?.activityIndicator.startAnimating()
         }
         
         if photo.image != nil {
-            FlickrClient.sharedInstance().convertStringToImage(photo, completionHandler: { (image, error) in
-                if error != nil {
-                    
-                } else {
-                    performUIUpdatesOnMain {
-                        cell?.photo.image = image
-                        cell?.activityIndicator.stopAnimating()
-                        cell?.activityIndicator.hidesWhenStopped = true
-                    }
-                }
-            })
-        } else {
+            
             performUIUpdatesOnMain {
                 if let image =  UIImage(data: photo.image as! Data) {
                     cell?.photo.image = image
+                    print("No network call")
                     cell?.editing = self.isEditing
-                    self.collectionView.reloadData()
                     try? self.fetchedResultsController.managedObjectContext.save()
                     cell?.activityIndicator.stopAnimating()
+                    cell?.activityIndicator.hidesWhenStopped = true
+
                 }
                 
             }
+        } else {
+            FlickrClient.sharedInstance().convertStringToImage(photo, completionHandler: { (image, error) in
+                if error != nil {
+                    alert("\(error)", "Try Agin", self)
+                } else {
+                    performUIUpdatesOnMain {
+                        if let image =  UIImage(data: photo.image as! Data) {
+                               print("network call")
+                            cell?.photo.image = image
+                            cell?.editing = self.isEditing
+                            try? self.fetchedResultsController.managedObjectContext.save()
+                            cell?.activityIndicator.stopAnimating()
+                            cell?.activityIndicator.hidesWhenStopped = true
+                        }
+                    }
+                    
+                }
+            })
         }
-        
-        
         return cell!
     }
-
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if isEditing {
@@ -173,9 +173,9 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
                 UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(PhotoViewController.onClickedToolbeltButton(_:)))
             )
             self.navigationController?.toolbar.items = items
-
+            
         }
-    
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -232,10 +232,10 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
 }
 
 
-    
-   
 
-    
+
+
+
 
 
 
