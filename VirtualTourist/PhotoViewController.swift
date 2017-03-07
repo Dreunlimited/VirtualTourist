@@ -22,6 +22,9 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
     
+    var insertedIndexPaths: [IndexPath]!
+    var deletedIndexPaths: [IndexPath]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
@@ -32,8 +35,8 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         mapView.addAnnotation(annotation)
         navigationItem.rightBarButtonItem = editButtonItem
         navigationController?.toolbar.isHidden = true
-        
-        
+        fetchedResultsController?.delegate = self
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,7 +93,6 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         for indexPath in indexPaths {
             let photo = fetchedResultsController.object(at: indexPath)
                         fetchedResultsController.managedObjectContext.delete(photo)
-                        try? fetchedResultsController.managedObjectContext.save()
             collectionView.deleteItems(at: indexPaths)
             collectionView.reloadData()
             
@@ -102,7 +104,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     
 }
 
-extension PhotoViewController {
+extension PhotoViewController: NSFetchedResultsControllerDelegate {
     
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -194,11 +196,42 @@ extension PhotoViewController {
         }
     }
     
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexPaths = []
+        deletedIndexPaths = []
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            insertedIndexPaths.append(newIndexPath!)
+        case .delete:
+            deletedIndexPaths.append(indexPath!)
+        default: ()
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        collectionView.performBatchUpdates({
+            for indexPath in self.insertedIndexPaths {
+                self.collectionView.insertItems(at: [indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.collectionView.deleteItems(at: [indexPath])
+            }
+        }, completion: nil)
+    }
+    
+    
+}
+
+
     
    
 
     
-}
+
 
 
 
