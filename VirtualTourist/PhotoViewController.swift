@@ -24,7 +24,6 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     var fetchedResultsController:NSFetchedResultsController<Photo>!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
-    var pageNum = UserDefaults()
     var number: Int!
    
 
@@ -85,8 +84,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
         }
-        let number = pageNum.value(forKey: "pageNumber") as! Int
-        let randomNumber = arc4random_uniform(UInt32(number))
+        let randomNumber = arc4random_uniform(UInt32(40))
         
         if reachability.currentReachabilityStatus == .notReachable {
             performUIUpdatesOnMain {

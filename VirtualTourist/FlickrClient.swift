@@ -14,7 +14,6 @@ class FlickrClient: NSObject {
     
     let session = URLSession.shared
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    var pageNum = UserDefaults()
     
     
     override init() {
@@ -40,9 +39,7 @@ class FlickrClient: NSObject {
                 return
             }
             
-             let pageNumber = photosDictionary["pages"] as? Int
-            print("Page number \(pageNumber)")
-             self.pageNum.set(pageNumber, forKey: "pageNumber")
+             _ pageNumber = photosDictionary["pages"] as? Int
             
             guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
                 return
