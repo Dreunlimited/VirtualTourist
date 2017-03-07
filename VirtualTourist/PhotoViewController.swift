@@ -9,8 +9,11 @@
 import UIKit
 import MapKit
 import CoreData
+import ReachabilitySwift
 
 class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+    let reachability = Reachability()!
+
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
@@ -72,33 +75,33 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     }
     
     @IBAction func refreshImagesButton(_ sender: Any) {
-        let randomNumber = arc4random_uniform(UInt32(20))
-        
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
-
         }
+        let randomNumber = arc4random_uniform(UInt32(20))
         
-        
+        if reachability.currentReachabilityStatus == .notReachable {
+            performUIUpdatesOnMain {
+                alert("Lost of internet connection", "Try again", self)
+            }
+        } else {
+
         FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&page=\(randomNumber)&lat=\(currentCoordinate.latitude)&lon=\(currentCoordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
-        
-        self.fectchImages()
-        try? fetchedResultsController.managedObjectContext.save()
-        self.collectionView.reloadData()
-        
+        fectchImages()
+        collectionView.reloadData()
+        }
     }
     
     func onClickedToolbeltButton(_ sender: UIBarButtonItem) {
         let indexPaths = collectionView.indexPathsForSelectedItems! as[IndexPath]
+        
         for indexPath in indexPaths {
             let photo = fetchedResultsController.object(at: indexPath)
                         fetchedResultsController.managedObjectContext.delete(photo)
-            collectionView.deleteItems(at: indexPaths)
-            collectionView.reloadData()
-            
-           
-        }
-        
+            }
+        try? fetchedResultsController.managedObjectContext.save()
+        self.fectchImages()
+         collectionView.reloadData()
         
     }
     
@@ -151,21 +154,11 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-//        let photo = fetchedResultsController.object(at: indexPath)
-//        fetchedResultsController.managedObjectContext.delete(photo)
-//        
-//        performUIUpdatesOnMain {
-//        
-//        collectionView.deleteItems(at: [indexPath])
-//        collectionView.reloadData()
-//        }
-        
         if isEditing {
             navigationController?.setToolbarHidden(false, animated: true)
             var items = [UIBarButtonItem]()
             items.append(
-                UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: Selector(("onClickedToolbeltButton:")))
+                UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(PhotoViewController.onClickedToolbeltButton(_:)))
             )
             self.navigationController?.toolbar.items = items
 

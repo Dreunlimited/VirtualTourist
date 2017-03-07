@@ -23,9 +23,12 @@
 		31C692191E62772900358AC3 /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C692181E62772900358AC3 /* FlickrClient.swift */; };
 		31C6921B1E627CD800358AC3 /* FlickrConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C6921A1E627CD800358AC3 /* FlickrConvenience.swift */; };
 		31C6921D1E63005400358AC3 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C6921C1E63005400358AC3 /* PhotoCollectionViewCell.swift */; };
+		31CAEDDA1E6E78890009EC9E /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CAEDD91E6E78890009EC9E /* Alert.swift */; };
+		6CBD50AD8853F152566E0894 /* Pods_VirtualTourist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F67B6C3269FE0B952BCFFFC /* Pods_VirtualTourist.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F67B6C3269FE0B952BCFFFC /* Pods_VirtualTourist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VirtualTourist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		319953B91E67D4CA003F2AC7 /* Photo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		319953BA1E67D4CA003F2AC7 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		319953BD1E6924E7003F2AC7 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataClass.swift"; path = "../Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -44,6 +47,9 @@
 		31C692181E62772900358AC3 /* FlickrClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
 		31C6921A1E627CD800358AC3 /* FlickrConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrConvenience.swift; sourceTree = "<group>"; };
 		31C6921C1E63005400358AC3 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		31CAEDD91E6E78890009EC9E /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		92BC1AB3F2B016CDF4427F68 /* Pods-VirtualTourist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.debug.xcconfig"; sourceTree = "<group>"; };
+		DD19B7AA86A091D34AABBA30 /* Pods-VirtualTourist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.release.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CBD50AD8853F152566E0894 /* Pods_VirtualTourist.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +70,8 @@
 				31C691DC1E62201800358AC3 /* VirtualTourist */,
 				31C691F71E62212300358AC3 /* Resources */,
 				31C691DB1E62201800358AC3 /* Products */,
+				9EEA32B27C02CED9C36E0CBE /* Pods */,
+				E04FBA0F124FEF5F40D6D648 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,9 +150,27 @@
 				31C691DD1E62201800358AC3 /* AppDelegate.swift */,
 				31C691EC1E62201800358AC3 /* Info.plist */,
 				31C692121E623F7700358AC3 /* GCD.swift */,
+				31CAEDD91E6E78890009EC9E /* Alert.swift */,
 			);
 			name = Resources;
 			path = VirtualTourist;
+			sourceTree = "<group>";
+		};
+		9EEA32B27C02CED9C36E0CBE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				92BC1AB3F2B016CDF4427F68 /* Pods-VirtualTourist.debug.xcconfig */,
+				DD19B7AA86A091D34AABBA30 /* Pods-VirtualTourist.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E04FBA0F124FEF5F40D6D648 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1F67B6C3269FE0B952BCFFFC /* Pods_VirtualTourist.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,9 +180,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 31C691EF1E62201800358AC3 /* Build configuration list for PBXNativeTarget "VirtualTourist" */;
 			buildPhases = (
+				9218F7D55394F99DBE3D6BAF /* [CP] Check Pods Manifest.lock */,
 				31C691D61E62201800358AC3 /* Sources */,
 				31C691D71E62201800358AC3 /* Frameworks */,
 				31C691D81E62201800358AC3 /* Resources */,
+				D8E4EB3767C2466FD8735E24 /* [CP] Embed Pods Frameworks */,
+				F9734D4806EA29166D4E033D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -214,6 +244,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9218F7D55394F99DBE3D6BAF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D8E4EB3767C2466FD8735E24 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9734D4806EA29166D4E033D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		31C691D61E62201800358AC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -225,6 +303,7 @@
 				31C691F91E6223AE00358AC3 /* MapViewController.swift in Sources */,
 				31C6921B1E627CD800358AC3 /* FlickrConvenience.swift in Sources */,
 				31C692131E623F7700358AC3 /* GCD.swift in Sources */,
+				31CAEDDA1E6E78890009EC9E /* Alert.swift in Sources */,
 				319953BB1E67D4CA003F2AC7 /* Photo+CoreDataClass.swift in Sources */,
 				31C692171E62766700358AC3 /* Constants.swift in Sources */,
 				31C692151E62497B00358AC3 /* PhotoViewController.swift in Sources */,
@@ -352,6 +431,7 @@
 		};
 		31C691F01E62201800358AC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 92BC1AB3F2B016CDF4427F68 /* Pods-VirtualTourist.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = W26XJUCE66;
@@ -365,6 +445,7 @@
 		};
 		31C691F11E62201800358AC3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD19B7AA86A091D34AABBA30 /* Pods-VirtualTourist.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = W26XJUCE66;

@@ -10,10 +10,14 @@ import UIKit
 import MapKit
 import CoreData
 import SafariServices
+import ReachabilitySwift
+
 
 
 
 class MapViewController: UIViewController, MKMapViewDelegate {
+    let reachability = Reachability()!
+
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -24,9 +28,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.mapView.delegate = self
-        let mapTouched = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.mapTouched(gestureRecognizer:)))
-        mapView.addGestureRecognizer(mapTouched)
+        
+        if reachability.currentReachabilityStatus == .notReachable {
+            performUIUpdatesOnMain {
+                alert("Lost of internet connection", "Try again", self)
+            }
+        } else {
+            
+            self.mapView.delegate = self
+            let mapTouched = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.mapTouched(gestureRecognizer:)))
+            mapView.addGestureRecognizer(mapTouched)
+        }
     }
     
         override func viewWillAppear(_ animated: Bool) {
@@ -46,7 +58,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             savePin(Double(pinDropped.coordinate.latitude), long: Double(pinDropped.coordinate.longitude))
             
+            if reachability.currentReachabilityStatus == .notReachable {
+                performUIUpdatesOnMain {
+                    alert("Lost of internet connection", "Try again", self)
+                }
+            } else {
+                
             FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(pinDropped.coordinate.latitude)&lon=\(pinDropped.coordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
+            }
         }
     }
     
