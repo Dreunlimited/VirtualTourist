@@ -24,6 +24,10 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     var fetchedResultsController:NSFetchedResultsController<Photo>!
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
+    var pageNum = UserDefaults()
+    var number: Int!
+   
+
     
     var insertedIndexPaths: [IndexPath]!
     var deletedIndexPaths: [IndexPath]!
@@ -39,6 +43,8 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         navigationItem.rightBarButtonItem = editButtonItem
         navigationController?.toolbar.isHidden = true
         fetchedResultsController?.delegate = self
+       
+
 
     }
     
@@ -75,10 +81,12 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     }
     
     @IBAction func refreshImagesButton(_ sender: Any) {
+      
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
         }
-        let randomNumber = arc4random_uniform(UInt32(20))
+        let number = pageNum.value(forKey: "pageNumber") as! Int
+        let randomNumber = arc4random_uniform(UInt32(number))
         
         if reachability.currentReachabilityStatus == .notReachable {
             performUIUpdatesOnMain {
@@ -100,7 +108,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
                         fetchedResultsController.managedObjectContext.delete(photo)
             }
         try? fetchedResultsController.managedObjectContext.save()
-        self.fectchImages()
+   
          collectionView.reloadData()
         
     }
@@ -123,35 +131,41 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as?
         PhotoCollectionViewCell
+        cell?.checkedImageView.image = nil
         
-        cell?.activityIndicator.startAnimating()
-        FlickrClient.sharedInstance().convertStringToImage(photo) { (image, error) in
-            if photo.image != nil {
+        performUIUpdatesOnMain {
+            cell?.activityIndicator.startAnimating()
+        }
+        
+        if photo.image != nil {
+            FlickrClient.sharedInstance().convertStringToImage(photo, completionHandler: { (image, error) in
                 if error != nil {
-                    print("Error \(error)")
+                    
                 } else {
                     performUIUpdatesOnMain {
                         cell?.photo.image = image
                         cell?.activityIndicator.stopAnimating()
-                        cell?.activityIndicator.isHidden = true
+                        cell?.activityIndicator.hidesWhenStopped = true
                     }
                 }
-            } else {
-                performUIUpdatesOnMain {
-                    if let image =  UIImage(data: photo.image as! Data) {
-                        cell?.photo.image = image
-                        cell?.editing = self.isEditing
-                        self.collectionView.reloadData()
-                        try? self.fetchedResultsController.managedObjectContext.save()
-                        cell?.activityIndicator.stopAnimating()
-                    }
-                    
+            })
+        } else {
+            performUIUpdatesOnMain {
+                if let image =  UIImage(data: photo.image as! Data) {
+                    cell?.photo.image = image
+                    cell?.editing = self.isEditing
+                    self.collectionView.reloadData()
+                    try? self.fetchedResultsController.managedObjectContext.save()
+                    cell?.activityIndicator.stopAnimating()
                 }
+                
             }
         }
+        
+        
         return cell!
     }
-    
+
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if isEditing {
