@@ -12,4 +12,6 @@ import CoreData
 
 public class Photo: NSManagedObject {
 
+    
+    
 }

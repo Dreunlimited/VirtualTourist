@@ -52,7 +52,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     
     
     @IBAction func backButton(_ sender: Any) {
-        navigationController?.popViewController(animated: true)
+       _ = navigationController?.popViewController(animated: true)
     }
     
     func fectchImages() {
@@ -76,7 +76,8 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     @IBAction func refreshImagesButton(_ sender: Any) {
         
         performUIUpdatesOnMain {
-            self.pin.removeFromPhotos(self.pin.photos!)
+          self.pin.deletePhotos((self.fetchedResultsController.managedObjectContext)) { _ in }
+            self.collectionView.reloadData()
         }
         pageNumber = pageNumber + 1
         
@@ -90,8 +91,12 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
             if error != nil {
                 print("Issue fetching images")
             } else {
-                self.fectchImages()
-                self.collectionView.reloadData()
+                performUIUpdatesOnMain {
+                    self.fectchImages()
+                    try? self.fetchedResultsController.managedObjectContext.save()
+                    self.collectionView.reloadData()
+                }
+                
             }
           })
             
