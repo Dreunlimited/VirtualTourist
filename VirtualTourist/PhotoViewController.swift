@@ -46,12 +46,13 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         fectchImages()
     }
     
     
     @IBAction func backButton(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
     
     func fectchImages() {
@@ -77,7 +78,6 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
         performUIUpdatesOnMain {
             self.pin.removeFromPhotos(self.pin.photos!)
         }
-        //        let randomNumber = arc4random_uniform(UInt32(20))
         pageNumber = pageNumber + 1
         
         if reachability.currentReachabilityStatus == .notReachable {
@@ -100,7 +100,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
             fetchedResultsController.managedObjectContext.delete(photo)
         }
         try? fetchedResultsController.managedObjectContext.save()
-        
+        self.fectchImages()
         collectionView.reloadData()
         
     }

@@ -84,7 +84,9 @@ class FlickrClient: NSObject {
             
            
             if let imageData = UIImage(data: data!) {
+                performUIUpdatesOnMain {
                 photo.image = data as NSData?
+                }
                 
                 do {
                     try photo.managedObjectContext?.save()
