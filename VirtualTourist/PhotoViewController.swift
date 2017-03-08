@@ -74,10 +74,9 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     }
     
     @IBAction func refreshImagesButton(_ sender: Any) {
-        
+        refreshImagesButton.isEnabled = false
         performUIUpdatesOnMain {
           self.pin.deletePhotos((self.fetchedResultsController.managedObjectContext)) { _ in }
-            self.collectionView.reloadData()
         }
         pageNumber = pageNumber + 1
         
@@ -93,10 +92,11 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
             } else {
                 performUIUpdatesOnMain {
                     self.fectchImages()
-                    try? self.fetchedResultsController.managedObjectContext.save()
-                    self.collectionView.reloadData()
+                    self.refreshImagesButton.isEnabled = true
                 }
-                
+
+                try? self.appDelegate?.persistentContainer.viewContext.save()
+
             }
           })
             
@@ -134,9 +134,10 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as?
         PhotoCollectionViewCell
-        cell?.photo.image = nil
+        
         
         performUIUpdatesOnMain {
+            cell?.photo.image = nil
             cell?.activityIndicator.startAnimating()
         }
         
@@ -147,7 +148,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
                     cell?.photo.image = image
                     print("No network call")
                     cell?.editing = self.isEditing
-                    try? self.fetchedResultsController.managedObjectContext.save()
+                    try? self.appDelegate?.persistentContainer.viewContext.save()
                     cell?.activityIndicator.stopAnimating()
                     cell?.activityIndicator.hidesWhenStopped = true
 
@@ -164,7 +165,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
                                print("network call")
                             cell?.photo.image = image
                             cell?.editing = self.isEditing
-                            try? self.fetchedResultsController.managedObjectContext.save()
+                            try? self.appDelegate?.persistentContainer.viewContext.save()
                             cell?.activityIndicator.stopAnimating()
                             cell?.activityIndicator.hidesWhenStopped = true
                         }

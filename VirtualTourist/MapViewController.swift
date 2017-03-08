@@ -55,7 +55,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let pinDropped = MKPointAnnotation()
             let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
             pinDropped.coordinate = newCoordinates
-            mapView.addAnnotation(pinDropped)
+            performUIUpdatesOnMain {
+                self.mapView.addAnnotation(pinDropped)
+            }
             
             savePin(Double(pinDropped.coordinate.latitude), long: Double(pinDropped.coordinate.longitude))
             
@@ -106,7 +108,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 annotation.coordinate.latitude = CLLocationDegrees(pin.latitude)
                 annotation.coordinate.longitude = CLLocationDegrees(pin.longitude)
                 pins.append(annotation)
-                mapView.addAnnotation(annotation)
+                performUIUpdatesOnMain {
+                    self.mapView.addAnnotation(annotation)
+                }
             }
             
         } catch let error as NSError {

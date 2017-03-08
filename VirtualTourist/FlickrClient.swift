@@ -127,7 +127,7 @@ class FlickrClient: NSObject {
                 do {
                     try managedContext?.save()
                 } catch let error as NSError {
-                    print("Could not save \(error.localizedDescription)")
+                    print("Could not save \(error.localizedFailureReason)")
                 }
             }
             
@@ -140,6 +140,7 @@ class FlickrClient: NSObject {
     
     func convertStringToImage(_ photo: Photo, completionHandler: @escaping(_ image: UIImage?, _ error: NSError?)-> Void)  {
         
+        print("ULR \(photo.url)")
         let request = URLRequest(url: URL(string: photo.url!)!)
         
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -149,21 +150,22 @@ class FlickrClient: NSObject {
 
             } else {
            
-            if let imageData = UIImage(data: data!) {
                 performUIUpdatesOnMain {
-                photo.image = data as NSData?
+                let imageData = UIImage(data: data!)
+                    photo.image = data as NSData?
+                    completionHandler(imageData, nil)
                 
                 }
                 
                 do {
+                    
                     try photo.managedObjectContext?.save()
                     
                 } catch let error as NSError {
                     print("Error saving image data: \(error.localizedFailureReason)")
-                    print("Response \(response)")
                 }
-                completionHandler(imageData, nil)
-            }
+                
+            
             
             }
         }
