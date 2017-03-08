@@ -153,20 +153,20 @@ class FlickrClient: NSObject {
                 performUIUpdatesOnMain {
                 let imageData = UIImage(data: data!)
                     photo.image = data as NSData?
+                    
+                    do {
+                        
+                        try photo.managedObjectContext?.save()
+                        
+                    } catch let error as NSError {
+                        print("Error saving image data: \(error.localizedFailureReason)")
+                        completionHandler(nil, error)
+                    }
+                    
                     completionHandler(imageData, nil)
                 
                 }
-                
-                do {
-                    
-                    try photo.managedObjectContext?.save()
-                    
-                } catch let error as NSError {
-                    print("Error saving image data: \(error.localizedFailureReason)")
-                }
-                
-            
-            
+        
             }
         }
         task.resume()
