@@ -20,13 +20,26 @@ class FlickrClient: NSObject {
     }
     
     
-    func fetchImages(_ methodParameters:[String:AnyObject], pin:Pin, completionHandler:@escaping (_ success: Bool, _ data: [[String : AnyObject]]?, _ error: String?)->Void){
+    func fetchImages(_ page:Int,_ lat:Double,_ long:Double,  pin:Pin, completionHandler:@escaping (_ success: Bool, _ error: String?)->Void){
         
-        let request = URLRequest(url: flickrURLFromParameters(methodParameters))
+        let methodParameters = [
+        "method": "flickr.photos.getRecent",
+        "api_key": Constants.FlickrParameterValues.APIKey,
+        "safe_search": "1",
+        "format": "json",
+        "nojsoncallback": "1",
+        "per_page": "30",
+        "page": String(page),
+        "lat": String(lat),
+        "long":String(long)
+        ]
+        
+        let request = URLRequest(url: flickrURLFromParameters(methodParameters as [String : AnyObject]))
+        print("Requesr \(request.url)")
         
         let task = session.dataTask(with: request) { (data, response, error) in
             if error != nil {
-                completionHandler(false, nil, "Error getting data")
+                completionHandler(false, "Error getting data")
             } else {
                 if let results = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String:AnyObject] {
                     
@@ -48,6 +61,8 @@ class FlickrClient: NSObject {
                                 photos.url = imageString
                                 photos.title = title
                                 photos.pin = pin
+                                
+                                completionHandler(true, nil)
                                 
                                 do {
                                     try managedContext?.save()

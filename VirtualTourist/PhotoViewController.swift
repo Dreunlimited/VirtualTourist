@@ -86,9 +86,15 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
             }
         } else {
             
-            FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&page=\(pageNumber)&lat=\(currentCoordinate.latitude)&lon=\(currentCoordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
-            fectchImages()
-            collectionView.reloadData()
+          FlickrClient.sharedInstance().fetchImages(pageNumber, currentCoordinate.latitude, currentCoordinate.longitude, pin: pin, completionHandler: { (sucess, error) in
+            if error != nil {
+                print("Issue fetching images")
+            } else {
+                self.fectchImages()
+                self.collectionView.reloadData()
+            }
+          })
+            
         }
     }
     
