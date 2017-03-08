@@ -19,6 +19,53 @@ class FlickrClient: NSObject {
         super.init()
     }
     
+    
+    func fetchImages(_ methodParameters:[String:AnyObject], pin:Pin, completionHandler:@escaping (_ success: Bool, _ data: [[String : AnyObject]]?, _ error: String?)->Void){
+        
+        let request = URLRequest(url: flickrURLFromParameters(methodParameters))
+        
+        let task = session.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                completionHandler(false, nil, "Error getting data")
+            } else {
+                if let results = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String:AnyObject] {
+                    
+                    if let photosDictionary = results?[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] {
+                        if let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] {
+                            
+                            for photoObject in photosArray {
+                                let farm = photoObject["farm"] as AnyObject
+                                let server = photoObject["server"] as AnyObject
+                                let photo = photoObject["id"] as AnyObject
+                                let secret = photoObject["secret"] as AnyObject
+                                let title = photoObject["title"] as? String
+                                
+                                let imageString = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
+                                
+                                let managedContext = self.appDelegate?.persistentContainer.viewContext
+                                
+                                let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
+                                photos.url = imageString
+                                photos.title = title
+                                photos.pin = pin
+                                
+                                do {
+                                    try managedContext?.save()
+                                } catch let error as NSError {
+                                    print("Could not save \(error.userInfo)")
+                                }
+
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+        task.resume()
+        
+    }
+    
     func getImages(_ url:String, _ pin:Pin) {
         
         let request = URLRequest(url: URL(string: url)!)
