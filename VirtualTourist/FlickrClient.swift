@@ -81,62 +81,6 @@ class FlickrClient: NSObject {
         
     }
     
-    func getImages(_ url:String, _ pin:Pin) {
-        
-        let request = URLRequest(url: URL(string: url)!)
-        
-        let task = session.dataTask(with: request) { (data, response, error) in
-            guard error == nil else {
-                print("Error with request: \(error)")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
-            
-            let results = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
-            
-            guard let photosDictionary = results??[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                return
-            }
-            
-            
-            guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
-                return
-            }
-            
-            
-            for photoObject in photosArray {
-                //title, imageURL, image, Pin
-                let farm = photoObject["farm"] as AnyObject
-                let server = photoObject["server"] as AnyObject
-                let photo = photoObject["id"] as AnyObject
-                let secret = photoObject["secret"] as AnyObject
-                let title = photoObject["title"] as? String
-                
-                let imageString = "https://farm\(farm).staticflickr.com/\(server)/\(photo)_\(secret)_m.jpg"
-                
-                let managedContext = self.appDelegate?.persistentContainer.viewContext
-                
-                let photos = Photo(entity: Photo.entity(), insertInto: managedContext)
-                photos.url = imageString
-                photos.title = title
-                photos.pin = pin
-                
-                do {
-                    try managedContext?.save()
-                } catch let error as NSError {
-                    print("Could not save \(error.localizedFailureReason)")
-                }
-            }
-            
-        }
-        
-        task.resume()
-    }
-    
-    
     
     func convertStringToImage(_ photo: Photo, completionHandler: @escaping(_ image: UIImage?, _ error: NSError?)-> Void)  {
         
@@ -196,6 +140,7 @@ class FlickrClient: NSObject {
         }
         return Singleton.sharedInstance
     }
+    
 }
 
 

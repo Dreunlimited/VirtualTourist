@@ -17,12 +17,12 @@ import ReachabilitySwift
 
 class MapViewController: UIViewController, MKMapViewDelegate {
     let reachability = Reachability()!
-
+    
     
     @IBOutlet weak var mapView: MKMapView!
     
     var fetchedResultsController:NSFetchedResultsController<Pin>!
-  
+    
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var pin = Pin()
     var number: Int!
@@ -42,10 +42,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(true)
-            
-            fectchPins()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        fectchPins()
     }
     
     
@@ -66,9 +66,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     alert("Lost of internet connection", "Try again", self)
                 }
             } else {
-                
-            FlickrClient.sharedInstance().getImages("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=1201bff4632c3631ae68d58d6bce474c&lat=\(pinDropped.coordinate.latitude)&lon=\(pinDropped.coordinate.longitude)&per_page=20&format=json&nojsoncallback=1", pin)
-                
+                FlickrClient.sharedInstance().fetchImages(1, pinDropped.coordinate.latitude, pinDropped.coordinate.longitude, pin: pin, completionHandler: { (sucess, error) in
+                    if error != nil {
+                        performUIUpdatesOnMain {
+                            alert("Error loading images", "Try again", self)
+                        }
+                    }
+                })
             }
         }
     }
@@ -89,7 +93,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-
+    
     func fectchPins() {
         
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
@@ -125,18 +129,18 @@ extension MapViewController {
     
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-            let photoVC = storyboard?.instantiateViewController(withIdentifier: "photoVC") as! PhotoViewController
-            photoVC.currentCoordinate = (view.annotation?.coordinate)!
+        let photoVC = storyboard?.instantiateViewController(withIdentifier: "photoVC") as! PhotoViewController
+        photoVC.currentCoordinate = (view.annotation?.coordinate)!
         
         let pins = fetchedResultsController.fetchedObjects
-            for pin in pins! {
-                if pin.latitude == Double((view.annotation?.coordinate.latitude)!) && pin.longitude == Double((view.annotation?.coordinate.longitude)!) {
-                    photoVC.pin = pin
-                    navigationController?.pushViewController(photoVC, animated: true)
+        for pin in pins! {
+            if pin.latitude == Double((view.annotation?.coordinate.latitude)!) && pin.longitude == Double((view.annotation?.coordinate.longitude)!) {
+                photoVC.pin = pin
+                navigationController?.pushViewController(photoVC, animated: true)
             }
             
         }
-       
+        
         
     }
     

@@ -52,7 +52,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     
     
     @IBAction func backButton(_ sender: Any) {
-       _ = navigationController?.popViewController(animated: true)
+        _ = navigationController?.popViewController(animated: true)
     }
     
     func fectchImages() {
@@ -76,7 +76,7 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
     @IBAction func refreshImagesButton(_ sender: Any) {
         refreshImagesButton.isEnabled = false
         performUIUpdatesOnMain {
-          self.pin.deletePhotos((self.fetchedResultsController.managedObjectContext)) { _ in }
+            self.pin.deletePhotos((self.fetchedResultsController.managedObjectContext)) { _ in }
         }
         pageNumber = pageNumber + 1
         
@@ -86,19 +86,19 @@ class PhotoViewController: UIViewController, MKMapViewDelegate, UICollectionView
             }
         } else {
             
-          FlickrClient.sharedInstance().fetchImages(pageNumber, currentCoordinate.latitude, currentCoordinate.longitude, pin: pin, completionHandler: { (sucess, error) in
-            if error != nil {
-                print("Issue fetching images")
-            } else {
-                performUIUpdatesOnMain {
-                    self.fectchImages()
-                    self.refreshImagesButton.isEnabled = true
+            FlickrClient.sharedInstance().fetchImages(pageNumber, currentCoordinate.latitude, currentCoordinate.longitude, pin: pin, completionHandler: { (sucess, error) in
+                if error != nil {
+                    print("Issue fetching images")
+                } else {
+                    performUIUpdatesOnMain {
+                        self.fectchImages()
+                        self.refreshImagesButton.isEnabled = true
+                    }
+                    
+                    try? self.appDelegate?.persistentContainer.viewContext.save()
+                    
                 }
-
-                try? self.appDelegate?.persistentContainer.viewContext.save()
-
-            }
-          })
+            })
             
         }
     }
@@ -151,7 +151,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
                     try? self.appDelegate?.persistentContainer.viewContext.save()
                     cell?.activityIndicator.stopAnimating()
                     cell?.activityIndicator.hidesWhenStopped = true
-
+                    
                 }
                 
             }
@@ -162,7 +162,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
                 } else {
                     performUIUpdatesOnMain {
                         if let image =  UIImage(data: photo.image as! Data) {
-                               print("network call")
+                            print("network call")
                             cell?.photo.image = image
                             cell?.editing = self.isEditing
                             try? self.appDelegate?.persistentContainer.viewContext.save()
@@ -239,16 +239,4 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
             }
         }, completion: nil)
     }
-    
-    
 }
-
-
-
-
-
-
-
-
-
-
